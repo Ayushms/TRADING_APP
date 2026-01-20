@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OpenAlgo Paper Trading</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="app-container">
+        <!-- Sidebar -->
+        <nav class="sidebar glass-panel">
+            <div class="logo">
+                <a href="index.html" style="text-decoration:none;">
+                    <h2>OpenAlgo<span class="dot">.</span></h2>
+                </a>
+            </div>
+            <ul class="nav-links">
+                <li class="active"><a href="index.html">Dashboard</a></li>
+                <li><a href="games/hub.html">Earn Funds</a></li>
+                <li><a href="#" onclick="alert('Coming Soon')">Analytics</a></li>
+                <li><a href="#" onclick="alert('Coming Soon')">Settings</a></li>
+            </ul>
+            <div class="user-profile">
+                <div class="avatar">U</div>
+                <div class="info">
+                    <span class="name">Trader</span>
+                    <span class="status">Pro Plan</span>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+
+            <!-- Header -->
+            <header class="top-bar glass-panel">
+                <div class="market-status">
+                    <span class="indicator active"></span> Market Open
+                </div>
+                <div class="wallet-display">
+                    <span class="label">Balance</span>
+                    <span class="amount" id="wallet-balance">₹0.00</span>
+                    <a href="games/hub.html" class="btn-micro">+ Earn</a>
+                </div>
+            </header>
+
+            <!-- Grid Layout -->
+            <div class="dashboard-grid">
+
+                <!-- Chart Section -->
+                <div class="chart-container glass-panel">
+                    <!-- TradingView Widget BEGIN -->
+                    <div class="tradingview-widget-container">
+                        <div id="tradingview_chart"></div>
+                    </div>
+                    <!-- TradingView Widget END -->
+                </div>
+
+                <!-- Order Panel -->
+                <div class="order-panel glass-panel">
+                    <h3>Place Order</h3>
+
+                    <div class="symbol-selector">
+                        <label>Symbol</label>
+                        <input type="text" id="order-symbol" value="BSE:RELIANCE" placeholder="e.g. BSE:TCS">
+                    </div>
+
+                    <div class="order-type">
+                        <button class="type-btn active">Market</button>
+                        <button class="type-btn">Limit</button>
+                    </div>
+
+                    <div class="input-group">
+                        <label>Quantity</label>
+                        <input type="number" id="order-qty" value="1" min="1">
+                    </div>
+
+                    <div class="input-group">
+                        <label>Price (Approx)</label>
+                        <input type="text" id="order-price" readonly value="Loading...">
+                    </div>
+
+                    <div class="action-buttons">
+                        <button class="btn-buy" onclick="placeOrder('BUY')">BUY</button>
+                        <button class="btn-sell" onclick="placeOrder('SELL')">SELL</button>
+                    </div>
+
+                    <div id="order-message" class="message-box"></div>
+                </div>
+
+                <!-- Portfolio / Positions -->
+                <div class="portfolio-panel glass-panel">
+                    <h3>Positions</h3>
+                    <table class="positions-table">
+                        <thead>
+                            <tr>
+                                <th>Symbol</th>
+                                <th>Qty</th>
+                                <th>Avg Price</th>
+                                <th>LTP</th>
+                                <th>P&L</th>
+                            </tr>
+                        </thead>
+                        <tbody id="positions-body">
+                            <!-- Populated by JS -->
+                            <tr>
+                                <td colspan="5" style="text-align:center; opacity:0.5;">No Open Positions</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Recent Transactions -->
+                <div class="transactions-panel glass-panel">
+                    <h3>Recent Trades</h3>
+                    <ul id="transactions-list">
+                        <!-- Populated by JS -->
+                    </ul>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script type="text/javascript" src="https://s3.tradingview.com/tv.js"></script>
+    <script src="app.js"></script>
+</body>
+
+</html>

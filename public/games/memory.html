@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Pattern Memory Game</title>
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.1);
+            height: 80px;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            transition: transform 0.3s;
+        }
+
+        .card.flipped {
+            background: var(--primary);
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container" style="justify-content: center; align-items: center; flex-direction: column;">
+        <div class="glass-panel" style="padding: 30px; width: 500px; text-align: center;">
+            <h2>Pattern Memory</h2>
+            <p style="color: var(--text-muted);">Match pairs of chart patterns to win ₹5,000.</p>
+
+            <div class="grid" id="grid"></div>
+
+            <h3 id="status" style="margin-top: 20px; min-height: 24px;"></h3>
+
+            <br>
+            <a href="hub.html" style="color: var(--text-muted);">Quit</a>
+        </div>
+    </div>
+
+    <script>
+        const patterns = ['📈', '📉', '🐂', '🐻', '💎', '🚀', '💰', '🛑'];
+        let cards = [...patterns, ...patterns]; // Duplicate for pairs
+        // Shuffle
+        cards.sort(() => 0.5 - Math.random());
+
+        const grid = document.getElementById('grid');
+        let flippedCards = [];
+        let matchedCount = 0;
+
+        cards.forEach((symbol, index) => {
+            const card = document.createElement('div');
+            card.classList.add('card');
+            card.dataset.symbol = symbol;
+            card.dataset.index = index;
+            card.innerText = '?'; // Hidden state
+
+            card.addEventListener('click', () => {
+                if (card.classList.contains('flipped') || flippedCards.length >= 2) return;
+
+                // Flip
+                card.classList.add('flipped');
+                card.innerText = symbol;
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    checkMatch();
+                }
+            });
+
+            grid.appendChild(card);
+        });
+
+        function checkMatch() {
+            const [c1, c2] = flippedCards;
+            if (c1.dataset.symbol === c2.dataset.symbol) {
+                // Match
+                matchedCount++;
+                flippedCards = [];
+                if (matchedCount === patterns.length) {
+                    document.getElementById('status').innerText = "YOU WIN! +₹5,000";
+                    document.getElementById('status').style.color = "#00c853";
+                    fetch('/api/wallet/add-funds', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ amount: 5000, source: 'MEMORY_GAME_WIN' })
+                    });
+                }
+            } else {
+                // No Match
+                setTimeout(() => {
+                    c1.classList.remove('flipped');
+                    c1.innerText = '?';
+                    c2.classList.remove('flipped');
+                    c2.innerText = '?';
+                    flippedCards = [];
+                }, 1000);
+            }
+        }
+    </script>
+</body>
+
+</html>
